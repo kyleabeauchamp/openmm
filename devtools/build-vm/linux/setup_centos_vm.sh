@@ -32,15 +32,17 @@ sudo yum clean packages
 cd ~/Software
 
 #NOTE: Right now, we cannot use yum to install CUDA because redhat forces you to upgrade to 6.5.  
-#wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-repo-rhel6-6.0-37.x86_64.rpm
-#sudo rpm -i  cuda-repo-rhel6-6.0-37.x86_64.rpm
-#sudo yum clean expire-cache
-#sudo yum install cuda -y
-#rm cuda-repo-rhel6-6.0-37.x86_64.rpm
+wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-repo-rhel6-6.0-37.x86_64.rpm
+sudo rpm -i  cuda-repo-rhel6-6.0-37.x86_64.rpm
+sudo yum clean expire-cache
+sudo yum install cuda -y
+rm cuda-repo-rhel6-6.0-37.x86_64.rpm
+sudo yum update -y  # Force a second update, in case CUDA has necessary patches.
 
-#sudo yum update -y  # Force a second update, in case CUDA has necessary patches.
+sudo yum remove -y cuda
 
 #Below is a workaround for installing CUDA 6.0, which manually installs the list of necessary RPM files, rather than using yum.
+#sudo yum install -y freeglut-devel libX11-devel libXmu-devel libXi-devel mesa-libGLU-devel
 wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-core-6-0-6.0-52.x86_64.rpm
 wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-core-libs-6-0-6.0-52.x86_64.rpm
 wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-documentation-6-0-6.0-52.x86_64.rpm
@@ -49,8 +51,15 @@ wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-h
 wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-misc-6-0-6.0-52.x86_64.rpm
 wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-license-6-0-6.0-52.x86_64.rpm
 wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-samples-6-0-6.0-52.x86_64.rpm
+wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/xorg-x11-drv-nvidia-libs-340.29-1.el6.x86_64.rpm
+wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/xorg-x11-drv-nvidia-340.29-1.el6.x86_64.rpm
+wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/nvidia-uvm-kmod-340.29-3.el6.x86_64.rpm
+wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/nvidia-kmod-340.29-2.el6.x86_64.rpm
 
+#sudo yum install -y dkms libvdpau
 sudo rpm -i cuda-core-6-0-6.0-52.x86_64.rpm cuda-core-libs-6-0-6.0-52.x86_64.rpm cuda-documentation-6-0-6.0-52.x86_64.rpm cuda-extra-libs-6-0-6.0-52.x86_64.rpm cuda-headers-6-0-6.0-52.x86_64.rpm cuda-misc-6-0-6.0-52.x86_64.rpm cuda-license-6-0-6.0-52.x86_64.rpm cuda-samples-6-0-6.0-52.x86_64.rpm
+#xorg-x11-drv-nvidia-libs-340.29-1.el6.x86_64.rpm xorg-x11-drv-nvidia-340.29-1.el6.x86_64.rpm nvidia-uvm-kmod-340.29-3.el6.x86_64.rpm nvidia-kmod-340.29-2.el6.x86_64.rpm
+sudo ln -s /usr/local/cuda-6.0/ /usr/local/cuda
 
 # Install Conda
 cd ~/Software

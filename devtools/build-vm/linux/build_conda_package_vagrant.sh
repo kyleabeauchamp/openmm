@@ -14,6 +14,7 @@ conda build devtools/conda-recipe
 # For release build:
 cd ../
 git clone https://github.com/omnia-md/conda-recipes.git
+export LD_LIBARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64/
 conda build conda-recipes/openmm
 
 # To upload the file, do something the following command but with the package version changed:
