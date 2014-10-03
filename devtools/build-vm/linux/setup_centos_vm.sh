@@ -30,13 +30,27 @@ sudo yum clean packages
 
 # Install CUDA6 for RHEL6
 cd ~/Software
-wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-repo-rhel6-6.0-37.x86_64.rpm
-sudo rpm -i  cuda-repo-rhel6-6.0-37.x86_64.rpm
-sudo yum clean expire-cache
-sudo yum install cuda -y
-rm cuda-repo-rhel6-6.0-37.x86_64.rpm
 
-sudo yum update -y  # Force a second update, in case CUDA has necessary patches.
+#NOTE: Right now, we cannot use yum to install CUDA because redhat forces you to upgrade to 6.5.  
+#wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-repo-rhel6-6.0-37.x86_64.rpm
+#sudo rpm -i  cuda-repo-rhel6-6.0-37.x86_64.rpm
+#sudo yum clean expire-cache
+#sudo yum install cuda -y
+#rm cuda-repo-rhel6-6.0-37.x86_64.rpm
+
+#sudo yum update -y  # Force a second update, in case CUDA has necessary patches.
+
+#Below is a workaround for installing CUDA 6.0, which manually installs the list of necessary RPM files, rather than using yum.
+wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-core-6-0-6.0-52.x86_64.rpm
+wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-core-libs-6-0-6.0-52.x86_64.rpm
+wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-documentation-6-0-6.0-52.x86_64.rpm
+wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-extra-libs-6-0-6.0-52.x86_64.rpm
+wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-headers-6-0-6.0-52.x86_64.rpm
+wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-misc-6-0-6.0-52.x86_64.rpm
+wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-license-6-0-6.0-52.x86_64.rpm
+wget http://developer.download.nvidia.com/compute/cuda/repos/rhel6/x86_64/cuda-samples-6-0-6.0-52.x86_64.rpm
+
+sudo rpm -i cuda-core-6-0-6.0-52.x86_64.rpm cuda-core-libs-6-0-6.0-52.x86_64.rpm cuda-documentation-6-0-6.0-52.x86_64.rpm cuda-extra-libs-6-0-6.0-52.x86_64.rpm cuda-headers-6-0-6.0-52.x86_64.rpm cuda-misc-6-0-6.0-52.x86_64.rpm cuda-license-6-0-6.0-52.x86_64.rpm cuda-samples-6-0-6.0-52.x86_64.rpm
 
 # Install Conda
 cd ~/Software

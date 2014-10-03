@@ -1,3 +1,4 @@
+#vagrant ssh  # To login to VM
 export PATH=$HOME/miniconda/bin:$PATH
 export SWIG_LIB=$HOME/miniconda/share/swig/
 export CC="clang++"
