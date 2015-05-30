@@ -490,9 +490,9 @@ void CudaCalcHarmonicBondForceKernel::copyParametersToContext(ContextImpl& conte
         throw OpenMMException("updateParametersInContext: The number of bonds has changed");
     if (numBonds == 0)
         return;
-    
+
     // Record the per-bond parameters.
-    
+
     vector<float2> paramVector(numBonds);
     for (int i = 0; i < numBonds; i++) {
         int atom1, atom2;
@@ -501,9 +501,9 @@ void CudaCalcHarmonicBondForceKernel::copyParametersToContext(ContextImpl& conte
         paramVector[i] = make_float2((float) length, (float) k);
     }
     params->upload(paramVector);
-    
+
     // Mark that the current reordering may be invalid.
-    
+
     cu.invalidateMolecules();
 }
 
@@ -635,9 +635,9 @@ void CudaCalcCustomBondForceKernel::copyParametersToContext(ContextImpl& context
         throw OpenMMException("updateParametersInContext: The number of bonds has changed");
     if (numBonds == 0)
         return;
-    
+
     // Record the per-bond parameters.
-    
+
     vector<vector<float> > paramVector(numBonds);
     vector<double> parameters;
     for (int i = 0; i < numBonds; i++) {
@@ -648,9 +648,9 @@ void CudaCalcCustomBondForceKernel::copyParametersToContext(ContextImpl& context
             paramVector[i][j] = (float) parameters[j];
     }
     params->setParameterValues(paramVector);
-    
+
     // Mark that the current reordering may be invalid.
-    
+
     cu.invalidateMolecules();
 }
 
@@ -725,9 +725,9 @@ void CudaCalcHarmonicAngleForceKernel::copyParametersToContext(ContextImpl& cont
         throw OpenMMException("updateParametersInContext: The number of angles has changed");
     if (numAngles == 0)
         return;
-    
+
     // Record the per-angle parameters.
-    
+
     vector<float2> paramVector(numAngles);
     for (int i = 0; i < numAngles; i++) {
         int atom1, atom2, atom3;
@@ -736,9 +736,9 @@ void CudaCalcHarmonicAngleForceKernel::copyParametersToContext(ContextImpl& cont
         paramVector[i] = make_float2((float) angle, (float) k);
     }
     params->upload(paramVector);
-    
+
     // Mark that the current reordering may be invalid.
-    
+
     cu.invalidateMolecules();
 }
 
@@ -871,9 +871,9 @@ void CudaCalcCustomAngleForceKernel::copyParametersToContext(ContextImpl& contex
         throw OpenMMException("updateParametersInContext: The number of angles has changed");
     if (numAngles == 0)
         return;
-    
+
     // Record the per-angle parameters.
-    
+
     vector<vector<float> > paramVector(numAngles);
     vector<double> parameters;
     for (int i = 0; i < numAngles; i++) {
@@ -884,9 +884,9 @@ void CudaCalcCustomAngleForceKernel::copyParametersToContext(ContextImpl& contex
             paramVector[i][j] = (float) parameters[j];
     }
     params->setParameterValues(paramVector);
-    
+
     // Mark that the current reordering may be invalid.
-    
+
     cu.invalidateMolecules();
 }
 
@@ -962,9 +962,9 @@ void CudaCalcPeriodicTorsionForceKernel::copyParametersToContext(ContextImpl& co
         throw OpenMMException("updateParametersInContext: The number of torsions has changed");
     if (numTorsions == 0)
         return;
-    
+
     // Record the per-torsion parameters.
-    
+
     vector<float4> paramVector(numTorsions);
     for (int i = 0; i < numTorsions; i++) {
         int atom1, atom2, atom3, atom4, periodicity;
@@ -973,9 +973,9 @@ void CudaCalcPeriodicTorsionForceKernel::copyParametersToContext(ContextImpl& co
         paramVector[i] = make_float4((float) k, (float) phase, (float) periodicity, 0.0f);
     }
     params->upload(paramVector);
-    
+
     // Mark that the current reordering may be invalid.
-    
+
     cu.invalidateMolecules();
 }
 
@@ -1058,9 +1058,9 @@ void CudaCalcRBTorsionForceKernel::copyParametersToContext(ContextImpl& context,
         throw OpenMMException("updateParametersInContext: The number of torsions has changed");
     if (numTorsions == 0)
         return;
-    
+
     // Record the per-torsion parameters.
-    
+
     vector<float4> paramVector1(numTorsions);
     vector<float2> paramVector2(numTorsions);
     for (int i = 0; i < numTorsions; i++) {
@@ -1072,9 +1072,9 @@ void CudaCalcRBTorsionForceKernel::copyParametersToContext(ContextImpl& context,
     }
     params1->upload(paramVector1);
     params2->upload(paramVector2);
-    
+
     // Mark that the current reordering may be invalid.
-    
+
     cu.invalidateMolecules();
 }
 
@@ -1338,9 +1338,9 @@ void CudaCalcCustomTorsionForceKernel::copyParametersToContext(ContextImpl& cont
         throw OpenMMException("updateParametersInContext: The number of torsions has changed");
     if (numTorsions == 0)
         return;
-    
+
     // Record the per-torsion parameters.
-    
+
     vector<vector<float> > paramVector(numTorsions);
     vector<double> parameters;
     for (int i = 0; i < numTorsions; i++) {
@@ -1351,9 +1351,9 @@ void CudaCalcCustomTorsionForceKernel::copyParametersToContext(ContextImpl& cont
             paramVector[i][j] = (float) parameters[j];
     }
     params->setParameterValues(paramVector);
-    
+
     // Mark that the current reordering may be invalid.
-    
+
     cu.invalidateMolecules();
 }
 
@@ -1592,9 +1592,9 @@ void CudaCalcNonbondedForceKernel::initialize(const System& system, const Nonbon
         double reactionFieldC = (1.0 / force.getCutoffDistance())*(3.0*force.getReactionFieldDielectric())/(2.0*force.getReactionFieldDielectric()+1.0);
         defines["REACTION_FIELD_K"] = cu.doubleToString(reactionFieldK);
         defines["REACTION_FIELD_C"] = cu.doubleToString(reactionFieldC);
-        
+
         // Compute the switching coefficients.
-        
+
         if (force.getUseSwitchingFunction()) {
             defines["LJ_SWITCH_CUTOFF"] = cu.doubleToString(force.getSwitchingDistance());
             defines["LJ_SWITCH_C3"] = cu.doubleToString(10/pow(force.getSwitchingDistance()-force.getCutoffDistance(), 3.0));
@@ -1714,9 +1714,9 @@ void CudaCalcNonbondedForceKernel::initialize(const System& system, const Nonbon
 
                 cufftSetCompatibilityMode(fftForward, CUFFT_COMPATIBILITY_NATIVE);
                 cufftSetCompatibilityMode(fftBackward, CUFFT_COMPATIBILITY_NATIVE);
-                
+
                 // Prepare for doing PME on its own stream.
-                
+
                 int cufftVersion;
                 cufftGetVersion(&cufftVersion);
                 usePmeStream = (cu.getComputeCapability() < 5.0 && numParticles < 130000 && cufftVersion >= 6000 && cufftVersion != 7000); // Workarounds for various CUDA bugs
@@ -1808,7 +1808,7 @@ void CudaCalcNonbondedForceKernel::initialize(const System& system, const Nonbon
     }
 
     // Add the interaction to the default nonbonded kernel.
-   
+
     string source = cu.replaceStrings(CudaKernelSources::coulombLennardJones, defines);
     cu.getNonbondedUtilities().addInteraction(useCutoff, usePeriodic, true, force.getCutoffDistance(), exclusionList, source, force.getForceGroup());
     if (hasLJ)
@@ -1849,9 +1849,9 @@ double CudaCalcNonbondedForceKernel::execute(ContextImpl& context, bool includeF
     if (directPmeGrid != NULL && includeReciprocal) {
         if (usePmeStream)
             cu.setCurrentStream(pmeStream);
-        
+
         // Invert the periodic box vectors.
-        
+
         Vec3 boxVectors[3];
         cu.getPeriodicBoxVectors(boxVectors[0], boxVectors[1], boxVectors[2]);
         double determinant = boxVectors[0][0]*boxVectors[1][1]*boxVectors[2][2];
@@ -1875,7 +1875,7 @@ double CudaCalcNonbondedForceKernel::execute(ContextImpl& context, bool includeF
             recipBoxVectorPointer[1] = &recipBoxVectorsFloat[1];
             recipBoxVectorPointer[2] = &recipBoxVectorsFloat[2];
         }
-        
+
         // Execute the reciprocal space kernels.
 
         void* gridIndexArgs[] = {&cu.getPosq().getDevicePointer(), &pmeAtomGridIndex->getDevicePointer(), cu.getPeriodicBoxSizePointer(),
@@ -1934,7 +1934,7 @@ double CudaCalcNonbondedForceKernel::execute(ContextImpl& context, bool includeF
 
 void CudaCalcNonbondedForceKernel::copyParametersToContext(ContextImpl& context, const NonbondedForce& force) {
     // Make sure the new parameters are acceptable.
-    
+
     cu.setAsCurrent();
     if (force.getNumParticles() != cu.getNumAtoms())
         throw OpenMMException("updateParametersInContext: The number of particles has changed");
@@ -1962,9 +1962,9 @@ void CudaCalcNonbondedForceKernel::copyParametersToContext(ContextImpl& context,
     int startIndex = cu.getContextIndex()*exceptions.size()/numContexts;
     int endIndex = (cu.getContextIndex()+1)*exceptions.size()/numContexts;
     int numExceptions = endIndex-startIndex;
-    
+
     // Record the per-particle parameters.
-    
+
     CudaArray& posq = cu.getPosq();
     posq.download(cu.getPinnedBuffer());
     float4* posqf = (float4*) cu.getPinnedBuffer();
@@ -1985,9 +1985,9 @@ void CudaCalcNonbondedForceKernel::copyParametersToContext(ContextImpl& context,
     }
     posq.upload(cu.getPinnedBuffer());
     sigmaEpsilon->upload(sigmaEpsilonVector);
-    
+
     // Record the exceptions.
-    
+
     if (numExceptions > 0) {
         vector<vector<int> > atoms(numExceptions, vector<int>(2));
         vector<float4> exceptionParamsVector(numExceptions);
@@ -1998,9 +1998,9 @@ void CudaCalcNonbondedForceKernel::copyParametersToContext(ContextImpl& context,
         }
         exceptionParams->upload(exceptionParamsVector);
     }
-    
+
     // Compute other values.
-    
+
     NonbondedForce::NonbondedMethod method = force.getNonbondedMethod();
     if (method == NonbondedForce::Ewald || method == NonbondedForce::PME)
         ewaldSelfEnergy = (cu.getContextIndex() == 0 ? -ONE_4PI_EPS0*alpha*sumSquaredCharges/sqrt(M_PI) : 0.0);
@@ -2159,7 +2159,7 @@ void CudaCalcCustomNonbondedForceKernel::initialize(const System& system, const 
     replacements["USE_SWITCH"] = (useCutoff && force.getUseSwitchingFunction() ? "1" : "0");
     if (force.getUseSwitchingFunction()) {
         // Compute the switching coefficients.
-        
+
         replacements["SWITCH_CUTOFF"] = cu.doubleToString(force.getSwitchingDistance());
         replacements["SWITCH_C3"] = cu.doubleToString(10/pow(force.getSwitchingDistance()-force.getCutoffDistance(), 3.0));
         replacements["SWITCH_C4"] = cu.doubleToString(15/pow(force.getSwitchingDistance()-force.getCutoffDistance(), 4.0));
@@ -2180,9 +2180,9 @@ void CudaCalcCustomNonbondedForceKernel::initialize(const System& system, const 
         }
     }
     cu.addForce(new CudaCustomNonbondedForceInfo(force));
-    
+
     // Record information for the long range correction.
-    
+
     if (force.getNonbondedMethod() == CustomNonbondedForce::CutoffPeriodic && force.getUseLongRangeCorrection() && cu.getContextIndex() == 0) {
         forceCopy = new CustomNonbondedForce(force);
         hasInitializedLongRangeCorrection = false;
@@ -2195,13 +2195,13 @@ void CudaCalcCustomNonbondedForceKernel::initialize(const System& system, const 
 
 void CudaCalcCustomNonbondedForceKernel::initInteractionGroups(const CustomNonbondedForce& force, const string& interactionSource) {
     // Process groups to form tiles.
-    
+
     vector<vector<int> > atomLists;
     vector<pair<int, int> > tiles;
     map<pair<int, int>, int> duplicateInteractions;
     for (int group = 0; group < force.getNumInteractionGroups(); group++) {
         // Get the list of atoms in this group and sort them.
-        
+
         set<int> set1, set2;
         force.getInteractionGroupParameters(group, set1, set2);
         vector<int> atoms1, atoms2;
@@ -2209,23 +2209,23 @@ void CudaCalcCustomNonbondedForceKernel::initInteractionGroups(const CustomNonbo
         atoms2.insert(atoms2.begin(), set2.begin(), set2.end());
         sort(atoms1.begin(), atoms1.end());
         sort(atoms2.begin(), atoms2.end());
-        
+
         // Find how many tiles we will create for this group.
-        
+
         int tileWidth = min(min(32, (int) atoms1.size()), (int) atoms2.size());
         if (tileWidth == 0)
             continue;
         int numBlocks1 = (atoms1.size()+tileWidth-1)/tileWidth;
         int numBlocks2 = (atoms2.size()+tileWidth-1)/tileWidth;
-        
+
         // Add the tiles.
-        
+
         for (int i = 0; i < numBlocks1; i++)
             for (int j = 0; j < numBlocks2; j++)
                 tiles.push_back(make_pair(atomLists.size()+i, atomLists.size()+numBlocks1+j));
-        
+
         // Add the atom lists.
-        
+
         for (int i = 0; i < numBlocks1; i++) {
             vector<int> atoms;
             int first = i*tileWidth;
@@ -2242,9 +2242,9 @@ void CudaCalcCustomNonbondedForceKernel::initInteractionGroups(const CustomNonbo
                 atoms.push_back(atoms2[j]);
             atomLists.push_back(atoms);
         }
-        
+
         // If this group contains duplicate interactions, record that we need to skip them once.
-        
+
         for (int i = 0; i < (int) atoms1.size(); i++) {
             int a1 = atoms1[i];
             if (set2.find(a1) == set2.end())
@@ -2260,16 +2260,16 @@ void CudaCalcCustomNonbondedForceKernel::initInteractionGroups(const CustomNonbo
             }
         }
     }
-    
+
     // Build a lookup table for quickly identifying excluded interactions.
-    
+
     set<pair<int, int> > exclusions;
     for (int i = 0; i < force.getNumExclusions(); i++) {
         int p1, p2;
         force.getExclusionParticles(i, p1, p2);
         exclusions.insert(make_pair(min(p1, p2), max(p1, p2)));
     }
-    
+
     // Build the exclusion flags for each tile.  While we're at it, filter out tiles
     // where all interactions are excluded, and sort the tiles by size.
 
@@ -2278,7 +2278,7 @@ void CudaCalcCustomNonbondedForceKernel::initInteractionGroups(const CustomNonbo
     for (int tile = 0; tile < tiles.size(); tile++) {
         if (atomLists[tiles[tile].first].size() < atomLists[tiles[tile].second].size()) {
             // For efficiency, we want the first axis to be the larger one.
-            
+
             int swap = tiles[tile].first;
             tiles[tile].first = tiles[tile].second;
             tiles[tile].second = swap;
@@ -2297,7 +2297,7 @@ void CudaCalcCustomNonbondedForceKernel::initInteractionGroups(const CustomNonbo
                     isExcluded = true; // This is an excluded interaction.
                 else if (duplicateInteractions.find(key) != duplicateInteractions.end() && duplicateInteractions[key] > 0) {
                     // Both atoms are in both sets, so skip duplicate interactions.
-                    
+
                     isExcluded = true;
                     duplicateInteractions[key]--;
                 }
@@ -2312,9 +2312,9 @@ void CudaCalcCustomNonbondedForceKernel::initInteractionGroups(const CustomNonbo
         exclusionFlags[tile] = flags;
     }
     sort(tileOrder.begin(), tileOrder.end());
-    
+
     // Merge tiles to get as close as possible to 32 along the first axis of each one.
-    
+
     vector<int> tileSetStart;
     tileSetStart.push_back(0);
     int tileSetSize = 0;
@@ -2328,9 +2328,9 @@ void CudaCalcCustomNonbondedForceKernel::initInteractionGroups(const CustomNonbo
         tileSetSize += size;
     }
     tileSetStart.push_back(tileOrder.size());
-    
+
     // Build the data structures.
-    
+
     int numTileSets = tileSetStart.size()-1;
     vector<int4> groupData;
     for (int tileSet = 0; tileSet < numTileSets; tileSet++) {
@@ -2354,15 +2354,15 @@ void CudaCalcCustomNonbondedForceKernel::initInteractionGroups(const CustomNonbo
     }
     interactionGroupData = CudaArray::create<int4>(cu, groupData.size(), "interactionGroupData");
     interactionGroupData->upload(groupData);
-    
+
     // Create the kernel.
-    
+
     map<string, string> replacements;
     replacements["COMPUTE_INTERACTION"] = interactionSource;
     const string suffixes[] = {"x", "y", "z", "w"};
     stringstream localData;
     int localDataSize = 0;
-    vector<CudaNonbondedUtilities::ParameterInfo>& buffers = params->getBuffers(); 
+    vector<CudaNonbondedUtilities::ParameterInfo>& buffers = params->getBuffers();
     for (int i = 0; i < (int) buffers.size(); i++) {
         if (buffers[i].getNumComponents() == 1)
             localData<<buffers[i].getComponentType()<<" params"<<(i+1)<<";\n";
@@ -2481,9 +2481,9 @@ void CudaCalcCustomNonbondedForceKernel::copyParametersToContext(ContextImpl& co
     int numParticles = force.getNumParticles();
     if (numParticles != cu.getNumAtoms())
         throw OpenMMException("updateParametersInContext: The number of particles has changed");
-    
+
     // Record the per-particle parameters.
-    
+
     vector<vector<float> > paramVector(numParticles);
     vector<double> parameters;
     for (int i = 0; i < numParticles; i++) {
@@ -2493,17 +2493,17 @@ void CudaCalcCustomNonbondedForceKernel::copyParametersToContext(ContextImpl& co
             paramVector[i][j] = (float) parameters[j];
     }
     params->setParameterValues(paramVector);
-    
+
     // If necessary, recompute the long range correction.
-    
+
     if (forceCopy != NULL) {
         longRangeCoefficient = CustomNonbondedForceImpl::calcLongRangeCorrection(force, context.getOwner());
         hasInitializedLongRangeCorrection = true;
         *forceCopy = force;
     }
-    
+
     // Mark that the current reordering may be invalid.
-    
+
     cu.invalidateMolecules();
 }
 
@@ -2682,14 +2682,14 @@ double CudaCalcGBSAOBCForceKernel::execute(ContextImpl& context, bool includeFor
 
 void CudaCalcGBSAOBCForceKernel::copyParametersToContext(ContextImpl& context, const GBSAOBCForce& force) {
     // Make sure the new parameters are acceptable.
-    
+
     cu.setAsCurrent();
     int numParticles = force.getNumParticles();
     if (numParticles != cu.getNumAtoms())
         throw OpenMMException("updateParametersInContext: The number of particles has changed");
-    
+
     // Record the per-particle parameters.
-    
+
     CudaArray& posq = cu.getPosq();
     float4* posqf = (float4*) cu.getPinnedBuffer();
     double4* posqd = (double4*) cu.getPinnedBuffer();
@@ -2708,9 +2708,9 @@ void CudaCalcGBSAOBCForceKernel::copyParametersToContext(ContextImpl& context, c
     }
     posq.upload(cu.getPinnedBuffer());
     params->upload(paramsVector);
-    
+
     // Mark that the current reordering may be invalid.
-    
+
     cu.invalidateMolecules();
 }
 
@@ -2891,7 +2891,7 @@ void CudaCalcCustomGBForceKernel::initialize(const System& system, const CustomG
     longEnergyDerivs = CudaArray::create<long long>(cu, force.getNumComputedValues()*cu.getPaddedNumAtoms(), "customGBLongEnergyDerivatives");
     energyDerivs = new CudaParameterSet(cu, force.getNumComputedValues(), cu.getPaddedNumAtoms(), "customGBEnergyDerivatives", true);
     energyDerivChain = new CudaParameterSet(cu, force.getNumComputedValues(), cu.getPaddedNumAtoms(), "customGBEnergyDerivativeChain", true);
- 
+
     // Create the kernels.
 
     bool useCutoff = (force.getNonbondedMethod() != CustomGBForce::NoCutoff);
@@ -3166,9 +3166,9 @@ void CudaCalcCustomGBForceKernel::initialize(const System& system, const CustomG
         for (int i = 0; i < energyDerivs->getNumParameters(); ++i)
             load << "derivBuffers" << energyDerivs->getParameterSuffix(i, "[index]") <<
                     " = RECIP(0x100000000)*derivBuffersIn[index+PADDED_NUM_ATOMS*" << cu.intToString(i) << "];\n";
-        
+
         // Compute the various expressions.
-        
+
         map<string, string> variables;
         variables["x"] = "pos.x";
         variables["y"] = "pos.y";
@@ -3204,9 +3204,9 @@ void CudaCalcCustomGBForceKernel::initialize(const System& system, const CustomG
             for (int j = 0; j < i; j++)
                 expressions["real dV"+cu.intToString(i)+"dV"+cu.intToString(j)+" = "] = valueDerivExpressions[i][j];
         compute << cu.getExpressionUtilities().createExpressions(expressions, variables, functionList, functionDefinitions, "temp");
-        
+
         // Record values.
-        
+
         for (int i = 0; i < (int) energyDerivs->getBuffers().size(); i++) {
             string index = cu.intToString(i+1);
             compute << "derivBuffers" << index << "[index] = deriv" << index << ";\n";
@@ -3362,7 +3362,7 @@ void CudaCalcCustomGBForceKernel::initialize(const System& system, const CustomG
                 parameters.push_back(CudaNonbondedUtilities::ParameterInfo(paramName, buffer.getComponentType(), buffer.getNumComponents(), buffer.getSize(), buffer.getMemory()));
         }
         for (int i = 0; i < (int) energyDerivChain->getBuffers().size(); i++) {
-            if (needChainForValue[i]) { 
+            if (needChainForValue[i]) {
                 CudaNonbondedUtilities::ParameterInfo& buffer = energyDerivChain->getBuffers()[i];
                 string paramName = prefix+"dEdV"+cu.intToString(i+1);
                 parameters.push_back(CudaNonbondedUtilities::ParameterInfo(paramName, buffer.getComponentType(), buffer.getNumComponents(), buffer.getSize(), buffer.getMemory()));
@@ -3386,7 +3386,7 @@ double CudaCalcCustomGBForceKernel::execute(ContextImpl& context, bool includeFo
     CudaNonbondedUtilities& nb = cu.getNonbondedUtilities();
     if (!hasInitializedKernels) {
         hasInitializedKernels = true;
-        
+
         // These two kernels can't be compiled in initialize(), because the nonbonded utilities object
         // has not yet been initialized then.
 
@@ -3420,7 +3420,7 @@ double CudaCalcCustomGBForceKernel::execute(ContextImpl& context, bool includeFo
         }
 
         // Set arguments for kernels.
-        
+
         maxTiles = (nb.getUseCutoff() ? nb.getInteractingTiles().getSize() : cu.getNumAtomBlocks()*(cu.getNumAtomBlocks()+1)/2);
         valueBuffers = CudaArray::create<long long>(cu, cu.getPaddedNumAtoms(), "customGBValueBuffers");
         cu.addAutoclearBuffer(*valueBuffers);
@@ -3558,9 +3558,9 @@ void CudaCalcCustomGBForceKernel::copyParametersToContext(ContextImpl& context, 
     int numParticles = force.getNumParticles();
     if (numParticles != cu.getNumAtoms())
         throw OpenMMException("updateParametersInContext: The number of particles has changed");
-    
+
     // Record the per-particle parameters.
-    
+
     vector<vector<float> > paramVector(cu.getPaddedNumAtoms(), vector<float>(force.getNumPerParticleParameters(), 0));
     vector<double> parameters;
     for (int i = 0; i < numParticles; i++) {
@@ -3569,9 +3569,9 @@ void CudaCalcCustomGBForceKernel::copyParametersToContext(ContextImpl& context, 
             paramVector[i][j] = (float) parameters[j];
     }
     params->setParameterValues(paramVector);
-    
+
     // Mark that the current reordering may be invalid.
-    
+
     cu.invalidateMolecules();
 }
 
@@ -3712,9 +3712,9 @@ void CudaCalcCustomExternalForceKernel::copyParametersToContext(ContextImpl& con
         throw OpenMMException("updateParametersInContext: The number of particles has changed");
     if (numParticles == 0)
         return;
-    
+
     // Record the per-particle parameters.
-    
+
     vector<vector<float> > paramVector(numParticles);
     vector<double> parameters;
     for (int i = 0; i < numParticles; i++) {
@@ -3725,9 +3725,9 @@ void CudaCalcCustomExternalForceKernel::copyParametersToContext(ContextImpl& con
             paramVector[i][j] = (float) parameters[j];
     }
     params->setParameterValues(paramVector);
-    
+
     // Mark that the current reordering may be invalid.
-    
+
     cu.invalidateMolecules();
 }
 
@@ -4212,9 +4212,9 @@ void CudaCalcCustomHbondForceKernel::copyParametersToContext(ContextImpl& contex
         throw OpenMMException("updateParametersInContext: The number of donors has changed");
     if (numAcceptors != force.getNumAcceptors())
         throw OpenMMException("updateParametersInContext: The number of acceptors has changed");
-    
+
     // Record the per-donor parameters.
-    
+
     if (numDonors > 0) {
         vector<vector<float> > donorParamVector(numDonors);
         vector<double> parameters;
@@ -4227,9 +4227,9 @@ void CudaCalcCustomHbondForceKernel::copyParametersToContext(ContextImpl& contex
         }
         donorParams->setParameterValues(donorParamVector);
     }
-    
+
     // Record the per-acceptor parameters.
-    
+
     if (numAcceptors > 0) {
         vector<vector<float> > acceptorParamVector(numAcceptors);
         vector<double> parameters;
@@ -4242,9 +4242,9 @@ void CudaCalcCustomHbondForceKernel::copyParametersToContext(ContextImpl& contex
         }
         acceptorParams->setParameterValues(acceptorParamVector);
     }
-    
+
     // Mark that the current reordering may be invalid.
-    
+
     cu.invalidateMolecules();
 }
 
@@ -4323,7 +4323,7 @@ void CudaCalcCustomCompoundBondForceKernel::initialize(const System& system, con
         string arrayName = cu.getBondedUtilities().addArgument(array->getDevicePointer(), width == 1 ? "float" : "float"+cu.intToString(width));
         functionDefinitions.push_back(make_pair(name, arrayName));
     }
-    
+
     // Record information about parameters.
 
     globalParamNames.resize(force.getNumGlobalParameters());
@@ -4540,9 +4540,9 @@ void CudaCalcCustomCompoundBondForceKernel::copyParametersToContext(ContextImpl&
         throw OpenMMException("updateParametersInContext: The number of bonds has changed");
     if (numBonds == 0)
         return;
-    
+
     // Record the per-bond parameters.
-    
+
     vector<vector<float> > paramVector(numBonds);
     vector<int> particles;
     vector<double> parameters;
@@ -4553,9 +4553,9 @@ void CudaCalcCustomCompoundBondForceKernel::copyParametersToContext(ContextImpl&
             paramVector[i][j] = (float) parameters[j];
     }
     params->setParameterValues(paramVector);
-    
+
     // Mark that the current reordering may be invalid.
-    
+
     cu.invalidateMolecules();
 }
 
@@ -4632,9 +4632,9 @@ void CudaCalcCustomManyParticleForceKernel::initialize(const System& system, con
     nonbondedMethod = CalcCustomManyParticleForceKernel::NonbondedMethod(force.getNonbondedMethod());
     forceWorkgroupSize = 128;
     findNeighborsWorkgroupSize = 128;
-    
+
     // Record parameter values.
-    
+
     params = new CudaParameterSet(cu, force.getNumPerParticleParameters(), numParticles, "customManyParticleParameters");
     vector<vector<float> > paramVector(numParticles);
     for (int i = 0; i < numParticles; i++) {
@@ -4669,7 +4669,7 @@ void CudaCalcCustomManyParticleForceKernel::initialize(const System& system, con
             tableArgs << width;
         tableArgs << "* __restrict__ " << arrayName;
     }
-    
+
     // Record information about parameters.
 
     globalParamNames.resize(force.getNumGlobalParameters());
@@ -4699,9 +4699,9 @@ void CudaCalcCustomManyParticleForceKernel::initialize(const System& system, con
             variables.push_back(makeVariable(name, value));
         }
     }
-    
+
     // Build data structures for type filters.
-    
+
     vector<int> particleTypesVec;
     vector<int> orderIndexVec;
     vector<std::vector<int> > particleOrderVec;
@@ -4720,9 +4720,9 @@ void CudaCalcCustomManyParticleForceKernel::initialize(const System& system, con
                 flattenedOrder[i*particlesPerSet+j] = particleOrderVec[i][j];
         particleOrder->upload(flattenedOrder);
     }
-    
+
     // Build data structures for exclusions.
-    
+
     if (force.getNumExclusions() > 0) {
         vector<vector<int> > particleExclusions(numParticles);
         for (int i = 0; i < force.getNumExclusions(); i++) {
@@ -4744,9 +4744,9 @@ void CudaCalcCustomManyParticleForceKernel::initialize(const System& system, con
         exclusions->upload(exclusionsVec);
         exclusionStartIndex->upload(exclusionStartIndexVec);
     }
-    
+
     // Build data structures for the neighbor list.
-    
+
     if (nonbondedMethod != NoCutoff) {
         int numAtomBlocks = cu.getNumAtomBlocks();
         int elementSize = (cu.getUseDoublePrecision() ? sizeof(double) : sizeof(float));
@@ -4920,14 +4920,14 @@ void CudaCalcCustomManyParticleForceKernel::initialize(const System& system, con
         compute<<forceNames[atoms[3]]<<" += internalF3;\n";
         compute<<"}\n";
     }
-    
+
     // Store forces to global memory.
-    
+
     for (int i = 0; i < particlesPerSet; i++)
         compute<<"storeForce(atom"<<(i+1)<<", "<<forceNames[i]<<", forceBuffers);\n";
-    
+
     // Create other replacements that depend on the number of particles per set.
-    
+
     stringstream numCombinations, atomsForCombination, isValidCombination, permute, loadData, verifyCutoff, verifyExclusions;
     if (hasTypeFilters) {
         permute<<"int particleSet[] = {";
@@ -5012,9 +5012,9 @@ void CudaCalcCustomManyParticleForceKernel::initialize(const System& system, con
     string computeTypeIndex = "particleTypes[p"+cu.intToString(particlesPerSet)+"]";
     for (int i = particlesPerSet-2; i >= 0; i--)
         computeTypeIndex = "particleTypes[p"+cu.intToString(i+1)+"]+"+cu.intToString(numTypes)+"*("+computeTypeIndex+")";
-    
+
     // Create replacements for extra arguments.
-    
+
     stringstream extraArgs;
     for (int i = 0; i < (int) params->getBuffers().size(); i++) {
         CudaNonbondedUtilities::ParameterInfo& buffer = params->getBuffers()[i];
@@ -5069,9 +5069,9 @@ void CudaCalcCustomManyParticleForceKernel::initialize(const System& system, con
 double CudaCalcCustomManyParticleForceKernel::execute(ContextImpl& context, bool includeForces, bool includeEnergy) {
     if (!hasInitializedKernel) {
         hasInitializedKernel = true;
-        
+
         // Set arguments for the force kernel.
-        
+
         forceArgs.push_back(&cu.getForce().getDevicePointer());
         forceArgs.push_back(&cu.getEnergyBuffer().getDevicePointer());
         forceArgs.push_back(&cu.getPosq().getDevicePointer());
@@ -5099,7 +5099,7 @@ double CudaCalcCustomManyParticleForceKernel::execute(ContextImpl& context, bool
         }
         for (int i = 0; i < (int) tabulatedFunctions.size(); i++)
             forceArgs.push_back(&tabulatedFunctions[i]->getDevicePointer());
-        
+
         if (nonbondedMethod != NoCutoff) {
             // Set arguments for the block bounds kernel.
 
@@ -5131,16 +5131,16 @@ double CudaCalcCustomManyParticleForceKernel::execute(ContextImpl& context, bool
                 neighborsArgs.push_back(&exclusions->getDevicePointer());
                 neighborsArgs.push_back(&exclusionStartIndex->getDevicePointer());
             }
-            
+
             // Set arguments for the kernel to find neighbor list start indices.
-            
+
             startIndicesArgs.push_back(&numNeighborsForAtom->getDevicePointer());
             startIndicesArgs.push_back(&neighborStartIndex->getDevicePointer());
             startIndicesArgs.push_back(&numNeighborPairs->getDevicePointer());
             startIndicesArgs.push_back(&maxNeighborPairs);
 
             // Set arguments for the kernel to assemble the final neighbor list.
-            
+
             copyPairsArgs.push_back(&neighborPairs->getDevicePointer());
             copyPairsArgs.push_back(&neighbors->getDevicePointer());
             copyPairsArgs.push_back(&numNeighborPairs->getDevicePointer());
@@ -5207,9 +5207,9 @@ void CudaCalcCustomManyParticleForceKernel::copyParametersToContext(ContextImpl&
     int numParticles = force.getNumParticles();
     if (numParticles != cu.getNumAtoms())
         throw OpenMMException("updateParametersInContext: The number of particles has changed");
-    
+
     // Record the per-particle parameters.
-    
+
     vector<vector<float> > paramVector(numParticles);
     vector<double> parameters;
     int type;
@@ -5220,9 +5220,9 @@ void CudaCalcCustomManyParticleForceKernel::copyParametersToContext(ContextImpl&
             paramVector[i][j] = (float) parameters[j];
     }
     params->setParameterValues(paramVector);
-    
+
     // Mark that the current reordering may be invalid.
-    
+
     cu.invalidateMolecules();
 }
 
@@ -5787,9 +5787,9 @@ void CudaIntegrateCustomStepKernel::prepareForComputation(ContextImpl& context, 
     bool useDouble = cu.getUseDoublePrecision() || cu.getUseMixedPrecision();
     if (!hasInitializedKernels) {
         hasInitializedKernels = true;
-        
+
         // Initialize various data structures.
-        
+
         const map<string, double>& params = context.getParameters();
         if (useDouble) {
             contextParameterValues = CudaArray::create<double>(cu, max(1, (int) params.size()), "contextParameters");
@@ -5825,10 +5825,10 @@ void CudaIntegrateCustomStepKernel::prepareForComputation(ContextImpl& context, 
         defines["WORK_GROUP_SIZE"] = cu.intToString(CudaContext::ThreadBlockSize);
         defines["SUM_BUFFER_SIZE"] = "0";
         defines["SUM_OUTPUT_INDEX"] = "0";
-        
+
         // Build a list of all variables that affect the forces, so we can tell which
         // steps invalidate them.
-        
+
         set<string> affectsForce;
         affectsForce.insert("x");
         for (vector<ForceImpl*>::const_iterator iter = context.getForceImpls().begin(); iter != context.getForceImpls().end(); ++iter) {
@@ -5836,9 +5836,9 @@ void CudaIntegrateCustomStepKernel::prepareForComputation(ContextImpl& context, 
             for (map<string, double>::const_iterator param = params.begin(); param != params.end(); ++param)
                 affectsForce.insert(param->first);
         }
-        
+
         // Record information about all the computation steps.
-        
+
         stepType.resize(numSteps);
         vector<string> variable(numSteps);
         vector<Lepton::ParsedExpression> expression(numSteps);
@@ -5890,9 +5890,9 @@ void CudaIntegrateCustomStepKernel::prepareForComputation(ContextImpl& context, 
             if (forceGroup[step] != -2 && savedForces.find(forceGroup[step]) == savedForces.end())
                 savedForces[forceGroup[step]] = new CudaArray(cu, cu.getForce().getSize(), cu.getForce().getElementSize(), "savedForces");
         }
-        
+
         // Determine how each step will represent the position (as just a value, or a value plus a delta).
-        
+
         vector<bool> storePosAsDelta(numSteps, false);
         vector<bool> loadPosAsDelta(numSteps, false);
         bool beforeConstrain = false;
@@ -5910,9 +5910,9 @@ void CudaIntegrateCustomStepKernel::prepareForComputation(ContextImpl& context, 
             if (stepType[step] == CustomIntegrator::ConstrainPositions)
                 storedAsDelta = false;
         }
-        
+
         // Identify steps that can be merged into a single kernel.
-        
+
         for (int step = 1; step < numSteps; step++) {
             if (needsForces[step] || needsEnergy[step])
                 continue;
@@ -5922,13 +5922,13 @@ void CudaIntegrateCustomStepKernel::prepareForComputation(ContextImpl& context, 
             if (stepType[step-1] == CustomIntegrator::ComputePerDof && stepType[step] == CustomIntegrator::ComputePerDof)
                 merged[step] = true;
         }
-        
+
         // Loop over all steps and create the kernels for them.
-        
+
         for (int step = 0; step < numSteps; step++) {
             if ((stepType[step] == CustomIntegrator::ComputePerDof || stepType[step] == CustomIntegrator::ComputeSum) && !merged[step]) {
                 // Compute a per-DOF value.
-                
+
                 stringstream compute;
                 for (int i = 0; i < (int) perDofValues->getBuffers().size(); i++) {
                     CudaNonbondedUtilities::ParameterInfo& buffer = perDofValues->getBuffers()[i];
@@ -6071,9 +6071,9 @@ void CudaIntegrateCustomStepKernel::prepareForComputation(ContextImpl& context, 
                 kernelArgs[step].push_back(args);
             }
         }
-        
+
         // Initialize the random number generator.
-        
+
         int maxUniformRandoms = 1;
         for (int i = 0; i < (int) requiredUniform.size(); i++)
             maxUniformRandoms = max(maxUniformRandoms, requiredUniform[i]);
@@ -6094,7 +6094,7 @@ void CudaIntegrateCustomStepKernel::prepareForComputation(ContextImpl& context, 
         randomSeed->upload(seed);
         CUmodule randomProgram = cu.createModule(CudaKernelSources::customIntegrator, defines);
         randomKernel = cu.getKernel(randomProgram, "generateRandomNumbers");
-        
+
         // Create the kernel for computing kinetic energy.
 
         stringstream computeKE;
@@ -6148,9 +6148,9 @@ void CudaIntegrateCustomStepKernel::prepareForComputation(ContextImpl& context, 
         module = cu.createModule(CudaKernelSources::customIntegrator, defines);
         sumKineticEnergyKernel = cu.getKernel(module, useDouble ? "computeDoubleSum" : "computeFloatSum");
     }
-    
+
     // Make sure all values (variables, parameters, etc.) stored on the device are up to date.
-    
+
     if (!deviceValuesAreCurrent) {
         if (useDouble)
             perDofValues->setParameterValues(localPerDofValuesDouble);
@@ -6207,22 +6207,23 @@ void CudaIntegrateCustomStepKernel::execute(ContextImpl& context, CustomIntegrat
     int maxUniformRandoms = uniformRandoms->getSize();
     void* randomArgs[] = {&maxUniformRandoms, &uniformRandoms->getDevicePointer(), &randomSeed->getDevicePointer()};
     CUdeviceptr posCorrection = (cu.getUseMixedPrecision() ? cu.getPosqCorrection().getDevicePointer() : 0);
+    bool terminate = false;
     for (int i = 0; i < numSteps; i++) {
         int lastForceGroups = context.getLastForceGroups();
         if ((needsForces[i] || needsEnergy[i]) && (!forcesAreValid || lastForceGroups != forceGroup[i])) {
             if (forcesAreValid && savedForces.find(lastForceGroups) != savedForces.end()) {
                 // The forces are still valid.  We just need a different force group right now.  Save the old
                 // forces in case we need them again.
-                
+
                 cu.getForce().copyTo(*savedForces[lastForceGroups]);
                 validSavedForces.insert(lastForceGroups);
             }
             else
                 validSavedForces.clear();
-            
+
             // Recompute forces and/or energy.  Figure out what is actually needed
             // between now and the next time they get invalidated again.
-            
+
             bool computeForce = false, computeEnergy = false;
             for (int j = i; ; j++) {
                 if (needsForces[j])
@@ -6238,7 +6239,7 @@ void CudaIntegrateCustomStepKernel::execute(ContextImpl& context, CustomIntegrat
             }
             if (!computeEnergy && validSavedForces.find(forceGroup[i]) != validSavedForces.end()) {
                 // We can just restore the forces we saved earlier.
-                
+
                 savedForces[forceGroup[i]]->copyTo(cu.getForce());
             }
             else {
@@ -6290,8 +6291,18 @@ void CudaIntegrateCustomStepKernel::execute(ContextImpl& context, CustomIntegrat
         else if (stepType[i] == CustomIntegrator::ConstrainVelocities) {
             cu.getIntegrationUtilities().applyVelocityConstraints(integrator.getConstraintTolerance());
         }
+        else if (stepType[i] == CustomIntegrator::ConditionalTermination && !merged[i]) {
+            float uniform = SimTKOpenMMUtilities::getUniformlyDistributedRandomNumber();
+            float gauss = SimTKOpenMMUtilities::getNormallyDistributedRandomNumber();
+            kernelArgs[i][0][3] = &uniform;
+            kernelArgs[i][0][4] = &gauss;
+            cu.executeKernel(kernels[i][0], &kernelArgs[i][0][0], 1, 1);
+            terminate = bool(kernelArgs[i][0][0]);
+        }
         if (invalidatesForces[i])
             forcesAreValid = false;
+        if (terminate)
+            break;
     }
     recordChangedParameters(context);
 
@@ -6311,7 +6322,7 @@ double CudaIntegrateCustomStepKernel::computeKineticEnergy(ContextImpl& context,
     if (keNeedsForce && !forcesAreValid) {
         // Compute the force.  We want to then mark that forces are valid, which means also computing
         // potential energy if any steps will expect it to be valid too.
-        
+
         bool willNeedEnergy = false;
         for (int i = 0; i < integrator.getNumComputations(); i++)
             willNeedEnergy |= needsEnergy[i];
@@ -6512,7 +6523,7 @@ void CudaApplyMonteCarloBarostatKernel::scaleCoordinates(ContextImpl& context, d
         moleculeStartIndex->upload(startIndex);
 
         // Initialize the kernel arguments.
-        
+
     }
     int bytesToCopy = cu.getPosq().getSize()*(cu.getUseDoublePrecision() ? sizeof(double4) : sizeof(float4));
     CUresult result = cuMemcpyDtoD(savedPositions->getDevicePointer(), cu.getPosq().getDevicePointer(), bytesToCopy);
@@ -6520,7 +6531,7 @@ void CudaApplyMonteCarloBarostatKernel::scaleCoordinates(ContextImpl& context, d
         std::stringstream m;
         m<<"Error saving positions for MC barostat: "<<cu.getErrorString(result)<<" ("<<result<<")";
         throw OpenMMException(m.str());
-    }        
+    }
     float scalefX = (float) scaleX;
     float scalefY = (float) scaleY;
     float scalefZ = (float) scaleZ;

@@ -46,7 +46,7 @@ using namespace OpenMM;
 
    --------------------------------------------------------------------------------------- */
 
-ReferenceCustomDynamics::ReferenceCustomDynamics(int numberOfAtoms, const CustomIntegrator& integrator) : 
+ReferenceCustomDynamics::ReferenceCustomDynamics(int numberOfAtoms, const CustomIntegrator& integrator) :
            ReferenceDynamics(numberOfAtoms, integrator.getStepSize(), 0.0), integrator(integrator) {
     sumBuffer.resize(numberOfAtoms);
     oldPos.resize(numberOfAtoms);
@@ -102,7 +102,7 @@ void ReferenceCustomDynamics::update(ContextImpl& context, int numberOfAtoms, ve
     if (invalidatesForces.size() == 0) {
         // The first time this is called, work out when to recompute forces and energy.  First build a
         // list of every step that invalidates the forces.
-        
+
         invalidatesForces.resize(numSteps, false);
         needsForces.resize(numSteps, false);
         needsEnergy.resize(numSteps, false);
@@ -118,9 +118,9 @@ void ReferenceCustomDynamics::update(ContextImpl& context, int numberOfAtoms, ve
         }
         for (int i = 0; i < numSteps; i++)
             invalidatesForces[i] = (stepType[i] == CustomIntegrator::ConstrainPositions || affectsForce.find(stepVariable[i]) != affectsForce.end());
-        
+
         // Make a list of which steps require valid forces or energy to be known.
-        
+
         vector<string> forceGroupName;
         vector<string> energyGroupName;
         for (int i = 0; i < 32; i++) {
@@ -174,9 +174,9 @@ void ReferenceCustomDynamics::update(ContextImpl& context, int numberOfAtoms, ve
                 }
             }
         }
-        
+
         // Build the list of inverse masses.
-        
+
         inverseMasses.resize(numberOfAtoms);
         for (int i = 0; i < numberOfAtoms; i++) {
             if (masses[i] == 0.0)
@@ -185,14 +185,14 @@ void ReferenceCustomDynamics::update(ContextImpl& context, int numberOfAtoms, ve
                 inverseMasses[i] = 1.0/masses[i];
         }
     }
-    
+
     // Loop over steps and execute them.
-    
+    bool terminate = false;
     for (int i = 0; i < numSteps; i++) {
         if ((needsForces[i] || needsEnergy[i]) && (!forcesAreValid || context.getLastForceGroups() != forceGroup[i])) {
             // Recompute forces and or energy.  Figure out what is actually needed
             // between now and the next time they get invalidated again.
-            
+
             bool computeForce = false, computeEnergy = false;
             for (int j = i; ; j++) {
                 if (needsForces[j])
@@ -213,9 +213,9 @@ void ReferenceCustomDynamics::update(ContextImpl& context, int numberOfAtoms, ve
             forcesAreValid = true;
         }
         globals[energyName[i]] = energy;
-        
+
         // Execute the step.
-        
+
         switch (stepType[i]) {
             case CustomIntegrator::ComputeGlobal: {
                 map<string, RealOpenMM> variables = globals;
@@ -263,9 +263,18 @@ void ReferenceCustomDynamics::update(ContextImpl& context, int numberOfAtoms, ve
                 context.updateContextState();
                 globals.insert(context.getParameters().begin(), context.getParameters().end());
             }
+            case CustomIntegrator::ConditionalTermination: {
+              map<string, RealOpenMM> variables = globals;
+              variables["uniform"] = SimTKOpenMMUtilities::getUniformlyDistributedRandomNumber();
+              variables["gaussian"] = SimTKOpenMMUtilities::getNormallyDistributedRandomNumber();
+              terminate = bool(stepExpression[i].evaluate(variables));
+              break;
+            }
         }
         if (invalidatesForces[i])
             forcesAreValid = false;
+        if (terminate == true)
+            break;
     }
     ReferenceVirtualSites::computePositions(context.getSystem(), atomCoordinates);
     incrementTimeStep();
@@ -277,7 +286,7 @@ void ReferenceCustomDynamics::computePerDof(int numberOfAtoms, vector<RealVec>& 
               const map<string, RealOpenMM>& globals, const vector<vector<RealVec> >& perDof,
               const Lepton::ExpressionProgram& expression, const std::string& forceName) {
     // Loop over all degrees of freedom.
-    
+
     map<string, RealOpenMM> variables = globals;
     for (int i = 0; i < numberOfAtoms; i++) {
         if (masses[i] != 0.0) {
