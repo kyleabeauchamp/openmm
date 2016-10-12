@@ -233,7 +233,8 @@ class StateDataReporter(object):
         if self._potentialEnergy:
             values.append(state.getPotentialEnergy().value_in_unit(unit.kilojoules_per_mole))
         if self._kineticEnergy:
-            values.append(state.getKineticEnergy().value_in_unit(unit.kilojoules_per_mole))
+            #values.append(state.getKineticEnergy().value_in_unit(unit.kilojoules_per_mole))
+            values.append(simulation.integrator.getGlobalVariableByName("holding"))
         if self._totalEnergy:
             values.append((state.getKineticEnergy()+state.getPotentialEnergy()).value_in_unit(unit.kilojoules_per_mole))
         if self._temperature:
